@@ -15,7 +15,7 @@ public class RRScheduler {
     
     public RRScheduler(List<Process> processes) {
         this.processes = new ArrayList<>();
-        // Create deep copies to avoid modifying original processes
+        // Create deep copies to avoid modifying original processes.
         for (Process p : processes) {
             this.processes.add(p);
         }

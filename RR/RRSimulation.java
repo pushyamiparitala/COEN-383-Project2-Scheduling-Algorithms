@@ -166,7 +166,7 @@ public class RRSimulation {
             System.out.println();
             System.out.println("========================================================================================================");
             System.out.println("                    FINAL STATISTICS (Average over " + NUM_ITERATIONS + " iterations)");
-            System.out.println("========================================================================================================");
+            System.out.println("=======================================================================================================");
             System.out.println();
             System.out.println("Algorithm: Shortest Remaining Time (SRT) [Preemptive]");
             System.out.println("----------------------------------------------------------------------------------------------------");
