@@ -166,9 +166,9 @@ public class RRSimulation {
             System.out.println();
             System.out.println("========================================================================================================");
             System.out.println("                    FINAL STATISTICS (Average over " + NUM_ITERATIONS + " iterations)");
-            System.out.println("=======================================================================================================");
+            System.out.println("======================================================================================================");
             System.out.println();
-            System.out.println("Algorithm: Shortest Remaining Time (SRT) [Preemptive]");
+            System.out.println("Algorithm:  Round Robin (RR) [Preemptive]");
             System.out.println("----------------------------------------------------------------------------------------------------");
             System.out.printf("Average Turnaround Time (TAT): %.2f quanta%n", totalAvgTurnaroundTime);
             System.out.printf("Average Wait Time (WT): %.2f quanta%n", totalAvgWaitTime);

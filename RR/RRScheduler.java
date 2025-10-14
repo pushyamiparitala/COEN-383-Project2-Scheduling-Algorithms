@@ -49,7 +49,6 @@ public class RRScheduler {
             
             // If ready queue is empty, CPU is idle
             if (readyQueue.isEmpty()) {
-                
                 timeline.append('-');
                 currentQuantum++;
                 continue;
