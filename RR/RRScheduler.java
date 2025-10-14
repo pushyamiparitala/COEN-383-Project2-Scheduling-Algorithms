@@ -33,7 +33,7 @@ public class RRScheduler {
         int totalProcesses = processes.size();
         
         // Continue until all processes complete
-        while (currentQuantum < 99) {
+        while (currentQuantum < 100) {
             // Add all processes that have arrived by current quantum to ready queue
             for (int i = processIndex; i < processes.size(); i++) {
                 Process p = processes.get(i);
@@ -48,24 +48,6 @@ public class RRScheduler {
             
             // If ready queue is empty, CPU is idle
             if (readyQueue.isEmpty()) {
-                // Check if there are any processes that haven't started yet
-                // If we're past quantum 99 and queue is empty, stop the simulation
-                if (currentQuantum > 99) {
-                    break;
-                }
-                
-                // Check if there are any more processes coming
-                boolean hasMoreProcesses = false;
-                for (Process p : processes) {
-                    if (!p.isCompleted() && p.getArrivalTime() > currentQuantum) {
-                        hasMoreProcesses = true;
-                        break;
-                    }
-                }
-                
-                if (!hasMoreProcesses) {
-                    break;
-                }
                 
                 timeline.append('-');
                 currentQuantum++;
@@ -73,7 +55,7 @@ public class RRScheduler {
             }
             
             // Select process at the beginning of the queue
-            Process selectedProcess = getProcessWithShortestRemainingTime(readyQueue);
+            Process selectedProcess = readyQueue.removeFirst();
             
             // If this is the first time the process is getting CPU, set response time
             if (selectedProcess.getResponseTime() == -1) {
@@ -86,24 +68,51 @@ public class RRScheduler {
             // Add process name to timeline
             timeline.append(selectedProcess.getProcessName());
             
-            // If process completed, set completion time and remove from ready queue
+            // If process completed, set completion time and remove from ready queue. otherwise move to end.
             if (selectedProcess.isCompleted()) {
                 selectedProcess.setCompletionTime(currentQuantum + 1);
                 readyQueue.remove(selectedProcess);
                 completedProcesses++;
             }
+            else {
+                readyQueue.addLast(selectedProcess);
+            }
             
             // Move to next quantum
             currentQuantum++;
         }
-        
+        while(!readyQueue.isEmpty()) {
+            // Select process at the beginning of the queue
+            Process selectedProcess = readyQueue.removeFirst();
+
+            // If this is the first time the process is getting CPU, it is ineligible for getting more.
+            if (selectedProcess.getResponseTime() == -1) {
+                continue;
+            }
+
+            // Execute process for one quantum
+            selectedProcess.setRemainingTime(selectedProcess.getRemainingTime() - 1);
+
+            // Add process name to timeline
+            timeline.append(selectedProcess.getProcessName());
+
+            // If process completed, set completion time and remove from ready queue. otherwise move to end.
+            if (selectedProcess.isCompleted()) {
+                selectedProcess.setCompletionTime(currentQuantum + 1);
+                readyQueue.remove(selectedProcess);
+                completedProcesses++;
+            }
+            else {
+                readyQueue.addLast(selectedProcess);
+            }
+
+            // Move to next quantum
+            currentQuantum++;
+        }
         return timeline.toString();
     }
-    
-    /**
-     * Find process with shortest remaining time in ready queue
-     */
-    
+
+
     
     /**
      * Get list of processes that actually ran (for statistics)
