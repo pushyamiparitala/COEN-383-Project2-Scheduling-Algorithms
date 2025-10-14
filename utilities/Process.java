@@ -20,7 +20,7 @@ public class Process {
      */
     public Process(Random rand) {
         this.arrivalTime = rand.nextInt(100);
-        this.runtime = rand.nextInt(1001) / 100.0f;
+        this.runtime = rand.nextInt(10) + 1; // Service time 1-10 quantum
         this.priority = rand.nextInt(4) + 1;
         this.pid = -1;
         this.completionTime = -1.0f;
