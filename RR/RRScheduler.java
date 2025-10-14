@@ -1,3 +1,4 @@
+package RR;
 import java.util.ArrayList;
 import java.util.List;
 import utilities.Process;
@@ -48,7 +49,6 @@ public class RRScheduler {
             
             // If ready queue is empty, CPU is idle
             if (readyQueue.isEmpty()) {
-                
                 timeline.append('-');
                 currentQuantum++;
                 continue;
