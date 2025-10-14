@@ -6,7 +6,7 @@ import java.util.Random;
  * Process class representing a process in the CPU scheduling simulation
  * Each process has arrival time, runtime, priority, process ID, completion time, and response time
  */
-public class Process {
+public class Process2 {
     private float arrivalTime;
     private float runtime;
     private int priority;
@@ -18,7 +18,7 @@ public class Process {
     /**
      * Default constructor - generates random process attributes
      */
-    public Process(Random rand) {
+    public Process2(Random rand) {
         this.arrivalTime = rand.nextInt(100);
         this.runtime = rand.nextInt(10) + 1; // Service time 1-10 quantum
         this.priority = rand.nextInt(4) + 1;
@@ -31,7 +31,7 @@ public class Process {
     /**
      * Constructor for creating a dummy process
      */
-    public Process(int id, int dummy) {
+    public Process2(int id, int dummy) {
         this.arrivalTime = -1.0f;
         this.runtime = -1.0f;
         this.priority = -1;
