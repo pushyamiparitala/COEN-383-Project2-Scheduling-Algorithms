@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Move to the parent directory (so RR and Utilities are both visible).
+# Move to the parent directory (so RR and Utilities are both visible)
 cd ..
 
 # Compile all Java files
