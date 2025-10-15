@@ -124,10 +124,9 @@ public class Process {
     }
 
     /**
-     * Get process name based on priority (A, B, C, D)
+     * Get process name based on pid.
      */
     public char getProcessName() {
-        return (char) ('A' + priority - 1);
+        return (char) ('A' + pid);
     }
 }
-
