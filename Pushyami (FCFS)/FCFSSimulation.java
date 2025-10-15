@@ -1,6 +1,6 @@
 import java.util.List;
 import utilities.Process;
-import utilities.ProcessGenerator;
+import utilities.WorkloadGenerator;
 
 /**
  * Main class to run FCFS scheduling simulation
@@ -9,7 +9,6 @@ import utilities.ProcessGenerator;
 public class FCFSSimulation {
     
     private static final int NUM_ITERATIONS = 5;
-    private static final int NUM_PROCESSES = 15;
     
     public static void main(String[] args) {
         // Variables to accumulate statistics over all iterations
@@ -20,10 +19,8 @@ public class FCFSSimulation {
         
         // Run the simulation for specified number of iterations
         for (int iteration = 1; iteration <= NUM_ITERATIONS; iteration++) {
-            int seed = iteration;
-            
-            // Generate processes for this iteration
-            List<Process> processes = ProcessGenerator.generateProcesses(NUM_PROCESSES, seed);
+            // Generate verified workload for this iteration
+            List<Process> processes = WorkloadGenerator.generateAndVerifyWorkload();
             
             // Run FCFS scheduling algorithm
             FCFSScheduler.simulateFCFS(processes);
@@ -81,8 +78,8 @@ public class FCFSSimulation {
             totalAvgWaitTime += avgWaitTime;
             totalAvgTurnaroundTime += avgTurnaroundTime;
             
-            // Calculate throughput
-            double throughput = (double) processes.size() / processes.get(processes.size() - 1).getPid();
+            // Calculate throughput (processes completed per unit time)
+            double throughput = (double) processes.size() / processes.get(processes.size() - 1).getCompletionTime();
             totalThroughput += throughput;
             
             // Display iteration averages
