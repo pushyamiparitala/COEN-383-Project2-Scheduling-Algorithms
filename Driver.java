@@ -767,7 +767,7 @@ public class Driver {
 
             // Redirect System.out to file
             System.setOut(out);
-            System.out.println("=======================================================================================================");
+            System.out.println("======================================================================================================");
             System.out.println("                    Highest Priority First (HPF) Non Premptive SCHEDULING SIMULATION");
             System.out.println("========================================================================================================");
             System.out.println();
