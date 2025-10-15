@@ -4,7 +4,7 @@
 cd ..
 
 # Compile all Java files
-javac RR/*.java Utilities/*.java
+javac RR/*.java utilities/*.java
 
 # Run the RRSimulation class (from within the RR package)
 java RR.RRSimulation
