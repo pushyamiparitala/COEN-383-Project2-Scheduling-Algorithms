@@ -1,5 +1,8 @@
 import java.util.ArrayList;
 import java.util.List;
+
+import FIRSTCOMEFIRSTSERVE.FCFSScheduler;
+import SJF_Scheduler.SJFScheduler;
 import utilities.Process;
 import utilities.ProcessGenerator;
 import utilities.WorkloadGenerator;
@@ -516,6 +519,171 @@ public class Driver {
             e.printStackTrace();
         }
 
+        try {
+            // Create a PrintStream that writes to a file
+            PrintStream out = new PrintStream("SJSSimulationOutput.txt");
+
+            // Redirect System.out to file
+            System.setOut(out);
+            System.out.println("=======================================================================================================");
+            System.out.println("                    Shortest Job First (SJF) SCHEDULING SIMULATION");
+            System.out.println("========================================================================================================");
+            System.out.println();
+
+            // Variables to accumulate statistics over all iterations
+            double totalAvgTurnaroundTime = 0.0;
+            double totalAvgWaitTime = 0.0;
+            double totalAvgResponseTime = 0.0;
+            double totalThroughput = 0.0;
+
+            // Run the simulation for specified number of iterations
+            for (int iteration = 1; iteration <= NUM_ITERATIONS; iteration++) {
+                int seed = iteration * 100; // Different seed for each iteration
+
+                // Generate processes for this iteration
+                List<Process> processes = WorkloadGenerator.generateAndVerifyWorkload(iteration + 10);
+
+                // Run SJF scheduling algorithm
+                SJF_Scheduler.SJFScheduler scheduler = new SJF_Scheduler.SJFScheduler();
+                SJF_Scheduler.SJFScheduler.SJFResult result = scheduler.schedule(processes);
+                String timeline = result.timeChart;
+
+                // Get processes that actually ran
+                List<Process> ranProcesses = result.completedProcesses;
+
+                // Display iteration header
+                System.out.println("========================================================================================================");
+                System.out.println("ITERATION " + iteration + " - Shortest Job First (SJF) [Non-Preemptive]");
+                System.out.println("========================================================================================================");
+                System.out.println();
+
+                // Display generated processes
+                System.out.println("Generated Processes:");
+                System.out.println("----------------------------------------------------------------------------------------------------");
+                System.out.println("Process | Arrival Time | Expected Run Time | Priority");
+                System.out.println("----------------------------------------------------------------------------------------------------");
+
+                for (int i = 0; i < ranProcesses.size(); i++) {
+                    Process p = ranProcesses.get(i);
+                    System.out.printf("   %c    |     %.0f       |        %.0f          |    %d%n",
+                            p.getProcessName(),
+                            p.getArrivalTime(),
+                            p.getRuntime(),
+                            p.getPriority());
+                }
+                System.out.println("----------------------------------------------------------------------------------------------------");
+                System.out.println();
+
+                // Display timeline
+                System.out.println("Timeline (showing which process runs at each quantum):");
+                System.out.println("----------------------------------------------------------------------------------------------------");
+
+                // Print timeline in chunks of 100 characters for readability
+                int timelineLength = timeline.length();
+                for (int i = 0; i < timelineLength; i += 100) {
+                    int end = Math.min(i + 100, timelineLength);
+                    System.out.printf("Quanta %3d-%3d: %s%n", i, end - 1, timeline.substring(i, end));
+                }
+                System.out.println("----------------------------------------------------------------------------------------------------");
+                System.out.println();
+
+                // Display detailed process statistics
+                System.out.println("Process Statistics:");
+                System.out.println("----------------------------------------------------------------------------------------------------");
+                System.out.println("Process | Arrival | Start | End | Runtime | Response | Wait | Turnaround | Priority");
+                System.out.println("----------------------------------------------------------------------------------------------------");
+
+                // Variables for this iteration (obtained from SJFResult)
+                double avgResponseTime = result.metrics.avgResponseTime;
+                double avgWaitTime = result.metrics.avgWaitTime;
+                double avgTurnaroundTime = result.metrics.avgTurnaroundTime;
+
+                // Display each process details and calculate statistics
+                for (int i = 0; i < ranProcesses.size(); i++) {
+                    Process p = ranProcesses.get(i);
+
+                    float turnaroundTime = p.getTurnaroundTime();
+                    float responseTime = p.getResponseTimeValue();
+                    float waitTime = p.getWaitTime();
+
+                    // Statistics are already calculated in SJFScheduler, no need to accumulate here
+                    // avgResponseTime += responseTime;
+                    // avgWaitTime += waitTime;
+                    // avgTurnaroundTime += turnaroundTime;
+
+                    // Print process details
+                    System.out.printf("   %c    |  %.1f   | %.1f  | %.1f |   %.1f   |   %.1f    | %.1f  |    %.1f     |    %d%n",
+                            p.getProcessName(),
+                            p.getArrivalTime(),
+                            p.getResponseTime(),
+                            p.getCompletionTime(),
+                            p.getRuntime(),
+                            responseTime,
+                            waitTime,
+                            turnaroundTime,
+                            p.getPriority());
+                }
+
+                System.out.println("----------------------------------------------------------------------------------------------------");
+
+                // Statistics are already calculated in SJFScheduler, no need to recalculate here
+                int numRanProcesses = ranProcesses.size();
+                // avgResponseTime /= numRanProcesses;
+                // avgWaitTime /= numRanProcesses;
+                // avgTurnaroundTime /= numRanProcesses;
+
+                float lastCompletionTime = 0;
+                for (Process p : ranProcesses) {
+                    if (p.getCompletionTime() > lastCompletionTime) {
+                        lastCompletionTime = p.getCompletionTime();
+                    }
+                }
+                double throughput = result.metrics.throughput;
+
+                // Accumulate totals
+                totalAvgResponseTime += avgResponseTime;
+                totalAvgWaitTime += avgWaitTime;
+                totalAvgTurnaroundTime += avgTurnaroundTime;
+                totalThroughput += throughput;
+
+                // Display iteration summary
+                System.out.println();
+                System.out.println("Iteration " + iteration + " Summary:");
+                System.out.println("----------------------------------------------------------------------------------------------------");
+                System.out.printf("Processes Completed: %d%n", numRanProcesses);
+                System.out.printf("Total Quanta: %.0f%n", lastCompletionTime);
+                System.out.printf("Average Turnaround Time: %.2f quanta%n", avgTurnaroundTime);
+                System.out.printf("Average Wait Time: %.2f quanta%n", avgWaitTime);
+                System.out.printf("Average Response Time: %.2f quanta%n", avgResponseTime);
+                System.out.printf("Throughput: %.4f processes/quantum%n", throughput);
+                System.out.println("====================================================================================================");
+                System.out.println();
+            }
+
+            // Calculate overall averages
+            totalAvgResponseTime /= NUM_ITERATIONS;
+            totalAvgWaitTime /= NUM_ITERATIONS;
+            totalAvgTurnaroundTime /= NUM_ITERATIONS;
+            totalThroughput /= NUM_ITERATIONS;
+
+            // Display final summary statistics
+            System.out.println();
+            System.out.println("========================================================================================================");
+            System.out.println("                    FINAL STATISTICS (Average over " + NUM_ITERATIONS + " iterations)");
+            System.out.println("======================================================================================================");
+            System.out.println();
+            System.out.println("Algorithm:  Shortest Job First (SJF) [Non-Preemptive]");
+            System.out.println("----------------------------------------------------------------------------------------------------");
+            System.out.printf("Average Turnaround Time (TAT): %.2f quanta%n", totalAvgTurnaroundTime);
+            System.out.printf("Average Wait Time (WT): %.2f quanta%n", totalAvgWaitTime);
+            System.out.printf("Average Response Time (RT): %.2f quanta%n", totalAvgResponseTime);
+            System.out.printf("Average Throughput: %.4f processes/quantum%n", totalThroughput);
+            System.out.println("========================================================================================================");
+        }
+        catch(FileNotFoundException e) {
+            System.err.println("Error: Unable to create output file.");
+            e.printStackTrace();
+        }
+
     }
 }
-
