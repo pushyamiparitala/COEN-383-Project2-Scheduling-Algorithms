@@ -61,7 +61,7 @@ public class RRSimulation {
                 for (int i = 0; i < ranProcesses.size(); i++) {
                     Process p = ranProcesses.get(i);
                     System.out.printf("   %c    |     %.0f       |        %.0f          |    %d%n",
-                            (char)('A' + i),
+                            p.getProcessName(),
                             p.getArrivalTime(),
                             p.getRuntime(),
                             p.getPriority());
@@ -108,7 +108,7 @@ public class RRSimulation {
 
                     // Print process details
                     System.out.printf("   %c    |  %.1f   | %.1f  | %.1f |   %.1f   |   %.1f    | %.1f  |    %.1f     |    %d%n",
-                            (char)('A' + i),
+                            p.getProcessName(),
                             p.getArrivalTime(),
                             p.getResponseTime(),
                             p.getCompletionTime(),
