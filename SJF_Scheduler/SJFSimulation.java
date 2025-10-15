@@ -7,7 +7,7 @@ public class SJFSimulation {
 
     public static void main(String[] args) {
         // Generate workload
-        List<Process> processes = WorkloadGenerator.generateAndVerifyWorkload();
+        List<Process> processes = WorkloadGenerator.generateAndVerifyWorkload(12345);
 
         // Create scheduler instance
         SJFScheduler scheduler = new SJFScheduler();
