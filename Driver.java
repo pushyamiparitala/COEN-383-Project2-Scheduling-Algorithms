@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
+
+import FIRSTCOMEFIRSTSERVE.FCFSScheduler;
 import utilities.Process;
 import utilities.ProcessGenerator;
 import utilities.WorkloadGenerator;
