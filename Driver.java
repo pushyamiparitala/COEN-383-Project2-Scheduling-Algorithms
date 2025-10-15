@@ -522,12 +522,12 @@ public class Driver {
 
         try {
             // Create a PrintStream that writes to a file
-            PrintStream out = new PrintStream("HPFPSimulationOutput.txt");
+            PrintStream out = new PrintStream("HPFPreemptiveSimulationOutput.txt");
 
             // Redirect System.out to file
             System.setOut(out);
             System.out.println("=======================================================================================================");
-            System.out.println("                    Highest Priority First (HPF) SCHEDULING SIMULATION");
+            System.out.println("                    Highest Priority First - Preemptive (HPF) SCHEDULING SIMULATION");
             System.out.println("========================================================================================================");
             System.out.println();
 
@@ -550,8 +550,8 @@ public class Driver {
                 // Generate processes for this iteration
                 List<Process> processes = WorkloadGenerator.generateAndVerifyWorkload(iteration + 10);
 
-                // Run HPF(nonPremptive) scheduling algorithm
-                HPFNoPreventiveScheduler scheduler = new HPFNoPreventiveScheduler(processes);
+                // Run HPF(Premptive) scheduling algorithm
+                HPFPreventiveScheduler scheduler = new HPFPreventiveScheduler(processes);
                 String timeline = scheduler.simulate();
 
                 // Get processes that actually ran
@@ -763,7 +763,7 @@ public class Driver {
 
         try {
             // Create a PrintStream that writes to a file
-            PrintStream out = new PrintStream("HPFNonPSimulationOutput.txt");
+            PrintStream out = new PrintStream("HPFNonPreemptiveSimulationOutput.txt");
 
             // Redirect System.out to file
             System.setOut(out);
@@ -791,7 +791,7 @@ public class Driver {
                 // Generate processes for this iteration
                 List<Process> processes = WorkloadGenerator.generateAndVerifyWorkload(iteration + 10);
 
-                // Run HPF(Premptive) scheduling algorithm
+                // Run HPF(nonPremptive) scheduling algorithm
                 HPFNoPreventiveScheduler scheduler = new HPFNoPreventiveScheduler(processes);
                 String timeline = scheduler.simulate();
 
