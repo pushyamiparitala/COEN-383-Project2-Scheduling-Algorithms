@@ -1,3 +1,4 @@
+package SJF_Scheduler;
 
 import utilities.Process;
 import java.util.ArrayList;
@@ -8,19 +9,33 @@ import java.util.PriorityQueue;
 
 public class SJFScheduler {
 
+    public static class SJFResult {
+        public final List<Process> completedProcesses;
+        public final String timeChart;
+        public final Metrics metrics;
+
+        public SJFResult(List<Process> completedProcesses, String timeChart, Metrics metrics) {
+            this.completedProcesses = completedProcesses;
+            this.timeChart = timeChart;
+            this.metrics = metrics;
+        }
+    }
+
     public static class Metrics {
         public float avgTurnaroundTime;
         public float avgWaitTime;
         public float avgResponseTime;
+        public float throughput;
 
-        public Metrics(float avgTurnaroundTime, float avgWaitTime, float avgResponseTime) {
+        public Metrics(float avgTurnaroundTime, float avgWaitTime, float avgResponseTime, float throughput) {
             this.avgTurnaroundTime = avgTurnaroundTime;
             this.avgWaitTime = avgWaitTime;
             this.avgResponseTime = avgResponseTime;
+            this.throughput = throughput;
         }
     }
 
-    public Metrics schedule(List<Process> processes) {
+    public SJFResult schedule(List<Process> processes) {
         List<Process> processesCopy = new ArrayList<>(processes);
         // Sort processes by arrival time initially
         Collections.sort(processesCopy, Comparator.comparing(Process::getArrivalTime));
@@ -35,6 +50,8 @@ public class SJFScheduler {
         float totalTurnaroundTime = 0;
         float totalWaitTime = 0;
         float totalResponseTime = 0;
+        List<Process> completedProcessList = new ArrayList<>();
+        StringBuilder timeChart = new StringBuilder();
 
         // Index for processes that have not yet arrived
         int processIndex = 0;
@@ -75,9 +92,19 @@ public class SJFScheduler {
                 }
 
                 // Execute the process
+                // Execute the process
+                float startTime = currentTime;
                 currentTime += currentProcess.getRuntime();
                 currentProcess.setCompletionTime(currentTime);
                 completedProcesses++;
+                completedProcessList.add(currentProcess);
+
+                // Record execution for time chart
+                for (float i = startTime; i < currentTime; i++) {
+                    if (i < 100) { // Only record up to 100 quanta
+                        timeChart.append(currentProcess.getProcessName());
+                    }
+                }
 
                 totalTurnaroundTime += currentProcess.getTurnaroundTime();
                 totalWaitTime += currentProcess.getWaitTime();
@@ -86,15 +113,18 @@ public class SJFScheduler {
         }
 
         if (completedProcesses == 0) {
-            return new Metrics(0, 0, 0); // Avoid division by zero
+            return new SJFResult(new ArrayList<>(), "", new Metrics(0, 0, 0, 0)); // Avoid division by zero
         }
+        
+        float throughput = (float) completedProcesses / currentTime;
 
         Metrics metrics = new Metrics(
             totalTurnaroundTime / completedProcesses,
             totalWaitTime / completedProcesses,
-            totalResponseTime / completedProcesses
+            totalResponseTime / completedProcesses,
+            throughput
         );
 
-        return metrics;
+        return new SJFResult(completedProcessList, timeChart.toString(), metrics);
     }
 }
