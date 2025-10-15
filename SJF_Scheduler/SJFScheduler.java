@@ -42,6 +42,10 @@ public class SJFScheduler {
         while (completedProcesses < n) {
             // Add processes that have arrived by the current time to the ready queue
             while (processIndex < n && processesCopy.get(processIndex).getArrivalTime() <= currentTime) {
+                if (processesCopy.get(processIndex).getArrivalTime() >= 100) {
+                    processIndex++; // Drop the process
+                    continue;
+                }
                 readyQueue.add(processesCopy.get(processIndex));
                 processIndex++;
             }
@@ -49,6 +53,9 @@ public class SJFScheduler {
             if (readyQueue.isEmpty()) {
                 // If no processes are in the ready queue, advance time to the arrival of the next process
                 if (processIndex < n) {
+                    if (processesCopy.get(processIndex).getArrivalTime() >= 100) {
+                        break; // Stop scheduling
+                    }
                     currentTime = processesCopy.get(processIndex).getArrivalTime();
                 } else {
                     // Should not happen if workload is properly generated and verified
@@ -57,6 +64,10 @@ public class SJFScheduler {
             } else {
                 // Get the process with the shortest runtime from the ready queue (non-preemptive)
                 Process currentProcess = readyQueue.poll();
+
+                if (currentTime >= 100) {
+                    break; // Stop scheduling if current time exceeds the limit
+                }
 
                 // Set response time if not already set (first time CPU is allocated)
                 if (currentProcess.getResponseTime() == -1.0f) {
@@ -74,10 +85,14 @@ public class SJFScheduler {
             }
         }
 
+        if (completedProcesses == 0) {
+            return new Metrics(0, 0, 0); // Avoid division by zero
+        }
+
         Metrics metrics = new Metrics(
-            totalTurnaroundTime / n,
-            totalWaitTime / n,
-            totalResponseTime / n
+            totalTurnaroundTime / completedProcesses,
+            totalWaitTime / completedProcesses,
+            totalResponseTime / completedProcesses
         );
 
         return metrics;
