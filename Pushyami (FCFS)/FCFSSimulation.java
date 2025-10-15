@@ -26,7 +26,7 @@ public class FCFSSimulation {
             List<Process> processes = ProcessGenerator.generateProcesses(NUM_PROCESSES, seed);
             
             // Run FCFS scheduling algorithm
-            FCFSScheduler.simulateFCFS(processes);
+            //FCFSScheduler.simulateFCFS();
             
             // Display iteration header and process execution order
             System.out.println("Iteration " + iteration + " - First Come First Serve:");

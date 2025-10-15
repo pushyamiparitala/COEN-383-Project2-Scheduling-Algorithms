@@ -22,7 +22,7 @@ public class RRSimulation {
             // Redirect System.out to file
             System.setOut(out);
             System.out.println("=======================================================================================================");
-            System.out.println("                    Round Robin (RR) SCHEDULING SIMULATION");
+            System.out.println("                    Round-Robin (RR) SCHEDULING SIMULATION");
             System.out.println("========================================================================================================");
             System.out.println();
 

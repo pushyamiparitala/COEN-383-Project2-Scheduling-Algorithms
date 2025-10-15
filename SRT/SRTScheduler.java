@@ -1,3 +1,4 @@
+package SRT;
 import java.util.ArrayList;
 import java.util.List;
 import utilities.Process;
@@ -33,7 +34,7 @@ public class SRTScheduler {
         int totalProcesses = processes.size();
         
         // Continue until all processes complete
-        while (completedProcesses < totalProcesses) {
+        while (true) {
             // Add all processes that have arrived by current quantum to ready queue
             // Don't add new processes after quantum 99
             for (Process p : processes) {
@@ -75,7 +76,24 @@ public class SRTScheduler {
             
             // Select process with shortest remaining time
             Process selectedProcess = getProcessWithShortestRemainingTime(readyQueue);
-            
+            if (currentQuantum > 99) {
+                if (selectedProcess.getResponseTime() == -1) {
+                    readyQueue.remove(selectedProcess);
+                }
+                boolean eligibleProcess = false;
+                while (!readyQueue.isEmpty() && !eligibleProcess) {
+                    selectedProcess = getProcessWithShortestRemainingTime(readyQueue);
+                    if (selectedProcess.getResponseTime() == -1) {
+                        readyQueue.remove(selectedProcess);
+                    }
+                    else {
+                        eligibleProcess = true;
+                    }
+                }
+                if (readyQueue.isEmpty() && !eligibleProcess) {
+                    break;
+                }
+            }
             // If this is the first time the process is getting CPU, set response time
             if (selectedProcess.getResponseTime() == -1) {
                 selectedProcess.setResponseTime(currentQuantum);

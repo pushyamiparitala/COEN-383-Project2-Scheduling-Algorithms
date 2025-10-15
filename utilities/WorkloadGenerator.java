@@ -21,12 +21,12 @@ public class WorkloadGenerator {
      *
      * @return A list of processes that meets the criteria, sorted by arrival time.
      */
-    public static List<Process> generateAndVerifyWorkload() {
+    public static List<Process> generateAndVerifyWorkload(int seed) {
         int numberOfJobs = 10;
         List<Process> processes;
 
         while (true) {
-            processes = generateProcesses(numberOfJobs, SEED);
+            processes = generateProcesses(numberOfJobs, seed);
             if (verifyWorkload(processes)) {
                 break;
             }
